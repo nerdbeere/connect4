@@ -3,6 +3,9 @@ var express = require('express')
     , path = require('path');
 
 var app = express();
+var Connect4 = new require('./connect4');
+
+var c4 = new Connect4();
 
 app.configure(function () {
     app.set('port', process.env.PORT || 3000);
