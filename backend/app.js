@@ -7,6 +7,12 @@ var Connect4 = new require('./connect4');
 
 var c4 = new Connect4();
 
+// game loop
+(function tick() {
+    setTimeout(tick, 100);
+    c4.tick();
+})();
+
 app.configure(function () {
     app.set('port', process.env.PORT || 3000);
     app.use(express.logger('dev'));
