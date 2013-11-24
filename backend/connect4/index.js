@@ -69,9 +69,11 @@ var Connect4 = function() {
     var lobby = new LobbyModel();
     var games = [];
 
-    this.createGame = function() {
+    this.createGame = function(name) {
         var newId = games.length;
         var game = new GameModel(newId);
+
+        game.name = name;
 
         lobby.register(game);
         games.push(game);

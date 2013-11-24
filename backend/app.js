@@ -7,7 +7,12 @@ var Connect4 = new require('./connect4');
 
 var c4 = new Connect4();
 
-// game loop
+/**
+ * This is the game loop.
+ * In our case we don't exactly need it,
+ * because we could do everything with events.
+ * But it's a demonstration..
+ */
 (function tick() {
     setTimeout(tick, 100);
     c4.tick();

@@ -32,5 +32,13 @@ describe('Connect4', function () {
             expect(map).to.be.an('array');
             expect(map.length).to.equal(64);
         });
+
+        it('should have a nmae', function () {
+            var gameName = 'awesome game';
+            var gameId = c4.createGame(gameName);
+            var game = c4.getGame(gameId);
+
+            expect(game.name).to.equal(gameName);
+        });
     });
 });
