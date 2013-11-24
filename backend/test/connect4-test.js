@@ -5,7 +5,7 @@ describe('Connect4', function () {
 
     var c4;
     beforeEach(function () {
-        c4 = new Connect4();
+        c4 = Connect4;
     });
 
     it('should be able to create a game', function () {

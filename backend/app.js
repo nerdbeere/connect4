@@ -3,9 +3,10 @@ var express = require('express')
     , path = require('path');
 
 var app = express();
-var Connect4 = new require('./connect4');
+GLOBAL.Connect4 = require('./connect4');
 
-var c4 = new Connect4();
+Connect4.io = require('socket.io').listen(3001);
+Connect4.init();
 
 /**
  * This is the game loop.
@@ -15,7 +16,7 @@ var c4 = new Connect4();
  */
 (function tick() {
     setTimeout(tick, 100);
-    c4.tick();
+    Connect4.tick();
 })();
 
 app.configure(function () {

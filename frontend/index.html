@@ -2,6 +2,59 @@
 <html>
 <head>
     <title></title>
+    <script src="http://localhost:3001/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://localhost:3001');
+        var game = {
+            /**
+             * Create a new game
+             * @param name
+             */
+            game_create: function(name) {
+                socket.emit('game_create', {
+                    name: name
+                });
+            },
+            /**
+             * Get all open games
+             */
+            lobby_list: function() {
+                socket.emit('lobby_list');
+            },
+            /**
+             * Join a game
+             * @param gameId
+             */
+            game_join: function(gameId) {
+                socket.emit('game_join', {
+                    gameId: gameId
+                });
+            }
+        };
+
+        socket.on('lobby_list', function(data) {
+            console.log(data);
+        });
+
+        socket.on('game_create', function(data) {
+            console.log(data);
+        });
+
+        // triggered when a player joins your current game
+        socket.on('game_players', function(data) {
+            console.log(data);
+        });
+
+        // triggered on each game tick
+        socket.on('game_update', function(data) {
+            console.log(data);
+        });
+
+        // triggered on connect
+        socket.on('player_data', function(data) {
+            console.log(data);
+        });
+    </script>
 </head>
 <body>
 
