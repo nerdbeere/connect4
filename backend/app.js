@@ -15,7 +15,7 @@ Connect4.init();
  * But it's a demonstration..
  */
 (function tick() {
-    setTimeout(tick, 100);
+    setTimeout(tick, 1000);
     Connect4.tick();
 })();
 
