@@ -58,6 +58,7 @@ var GameModel = function(id, sizeX, sizeY) {
         }
 
         this.emitPlayers();
+        this.emitGameUpdate();
     };
 
     this.emitPlayers = function() {
@@ -77,7 +78,9 @@ var GameModel = function(id, sizeX, sizeY) {
                 map: this.getMap(),
                 currentPlayer: this.currentPlayer,
                 gameStatus: this.gameStatus,
-                winner: this.winner
+                winner: this.winner,
+                sizeX: this.sizeX,
+                sizeY: this.sizeY
             });
         }
     };
@@ -87,7 +90,7 @@ var GameModel = function(id, sizeX, sizeY) {
     };
 
     this.move = function(playerId, x) {
-        if(x < 0 || x > sizeX || this.gameStatus !== STATUS_PLAYING || this.currentPlayer !== playerId) {
+        if(x < 0 || x > sizeX || this.gameStatus !== STATUS_PLAYING || this.currentPlayer !== parseInt(playerId)) {
             return false;
         }
 
@@ -208,7 +211,7 @@ var LobbyModel = function() {
 var Connect4 = new (function() {
     var lobby = new LobbyModel();
     var games = [];
-    var players = [];
+    var players = [null];
     var that = this;
 
     this.createGame = function(name) {
@@ -251,7 +254,11 @@ var Connect4 = new (function() {
         socket.on('game_join', function(data) {
             socket.emit('game_join', that.joinGame(player.id, data.gameId));
         });
-        socket.on('game_move', function() {});
+        socket.on('game_move', function(data) {
+            var game = that.getGame(data.gameId);
+            var x = that.getGame(data.x);
+            game.move(player.id, x);
+        });
     };
 
     this.tick = function() {

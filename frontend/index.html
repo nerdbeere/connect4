@@ -3,60 +3,116 @@
 <head>
     <title></title>
     <script src="http://localhost:3001/socket.io/socket.io.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script>
     <script>
-        var socket = io.connect('http://localhost:3001');
-        var game = {
-            /**
-             * Create a new game
-             * @param name
-             */
-            game_create: function(name) {
-                socket.emit('game_create', {
-                    name: name
-                });
-            },
-            /**
-             * Get all open games
-             */
-            lobby_list: function() {
-                socket.emit('lobby_list');
-            },
-            /**
-             * Join a game
-             * @param gameId
-             */
-            game_join: function(gameId) {
-                socket.emit('game_join', {
-                    gameId: gameId
-                });
+
+        var game = (function(io) {
+            var socket = io.connect('http://localhost:3001');
+            var game = {
+                /**
+                 * Create a new game
+                 * @param name
+                 */
+                game_create: function(name) {
+                    socket.emit('game_create', {
+                        name: name
+                    });
+                },
+                /**
+                 * Get all open games
+                 */
+                lobby_list: function() {
+                    socket.emit('lobby_list');
+                },
+                /**
+                 * Join a game
+                 * @param gameId
+                 */
+                game_join: function(gameId) {
+                    socket.emit('game_join', {
+                        gameId: gameId
+                    });
+                },
+                game_move: function(gameId, x) {
+                    socket.emit('game_move', {
+                        gameId: gameId,
+                        x: x
+                    });
+                },
+            };
+            var gameData;
+
+            socket.on('lobby_list', function(data) {
+                console.log(data);
+            });
+
+            socket.on('game_create', function(data) {
+                console.log(data);
+            });
+
+            // triggered when a player joins your current game
+            socket.on('game_players', function(data) {
+                console.log(data);
+            });
+
+            // triggered on each game tick
+            socket.on('game_update', function(data) {
+                console.log(data);
+                gameData = data;
+                renderMap()
+            });
+
+            // triggered on connect
+            socket.on('player_data', function(data) {
+                console.log(data);
+            });
+
+            function getByCoord(x, y) {
+                var i = x + y * gameData.sizeX;
+                if(i >= gameData.sizeX * gameData.sizeY || i < 0)
+                    return 0;
+                return gameData.map[i];
             }
-        };
 
-        socket.on('lobby_list', function(data) {
-            console.log(data);
-        });
+            function renderMap() {
+                var $map = $('<div></div>');
+                for(var y = 0; y < gameData.sizeY; y++) {
+                    for(var x = 0; x < gameData.sizeX; x++) {
+                        $map.append(renderSlot(x, y));
+                    }
+                }
+                $('.game').html($map);
+            }
 
-        socket.on('game_create', function(data) {
-            console.log(data);
-        });
+            function renderSlot(x, y) {
+                var value = getByCoord(x, y);
+                var $slot = $('<div class="slot"></div>');
+                var color = '#CCCCCC';
 
-        // triggered when a player joins your current game
-        socket.on('game_players', function(data) {
-            console.log(data);
-        });
+                if(value == 1) {
+                    color = '#FF0000'
+                }
 
-        // triggered on each game tick
-        socket.on('game_update', function(data) {
-            console.log(data);
-        });
+                $slot.css({
+                    position: 'absolute',
+                    left: x * 30,
+                    top: y * 30,
+                    width: 30,
+                    height: 30,
+                    background: color,
+                    borderRadius: '15'
+                });
 
-        // triggered on connect
-        socket.on('player_data', function(data) {
-            console.log(data);
-        });
+                return $slot;
+            }
+
+            return game;
+
+        })(io);
+
     </script>
 </head>
 <body>
-
+    <div class="game"></div>
 </body>
 </html>
